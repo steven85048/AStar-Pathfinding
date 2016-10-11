@@ -1,3 +1,4 @@
+package spring;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -15,8 +16,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class PADPanel extends JPanel {
-	private int GRID_HEIGHT = 5;
-	private int GRID_WIDTH = 6;
 
 	private String BASE_DIR = "C://Users//steve//workspace//spring//pics//";
 
@@ -37,7 +36,7 @@ public class PADPanel extends JPanel {
 	BufferedImage light;
 
 	int index;
-	
+
 	public PADPanel(int[][] start, ArrayList<int[][]> boards) throws Exception {
 		this.start = start;
 		this.boards = boards;
@@ -47,11 +46,11 @@ public class PADPanel extends JPanel {
 		next = new JButton("NEXT MOVE");
 		next.addActionListener(new ButtonListener());
 
-		topPanel = new JPanel(new GridLayout(GRID_HEIGHT, GRID_WIDTH));
+		topPanel = new JPanel(new GridLayout(Move.GRID_HEIGHT, Move.GRID_WIDTH));
 
 		initializeImages();
 
-		labels = new JLabel[GRID_HEIGHT][GRID_WIDTH];
+		labels = new JLabel[Move.GRID_HEIGHT][Move.GRID_WIDTH];
 		initializeLabels();
 
 		initializeBoard();
@@ -60,13 +59,13 @@ public class PADPanel extends JPanel {
 		totalPanel.add(topPanel, BorderLayout.CENTER);
 		totalPanel.add(next, BorderLayout.SOUTH);
 
-		totalPanel.setPreferredSize(new Dimension(1000, 950));
+		totalPanel.setPreferredSize(new Dimension(PADApplet.APPLET_HEIGHT, PADApplet.APPLET_WIDTH - 50));
 		add(totalPanel);
 	}
 
 	public void initializeBoard() {
-		for (int i = 0; i < GRID_HEIGHT; i++) {
-			for (int j = 0; j < GRID_WIDTH; j++) {
+		for (int i = 0; i < Move.GRID_HEIGHT; i++) {
+			for (int j = 0; j < Move.GRID_WIDTH; j++) {
 				int curr = start[i][j];
 				JLabel currLabel = labels[i][j];
 
@@ -105,8 +104,8 @@ public class PADPanel extends JPanel {
 	}
 
 	public void initializeLabels() throws Exception {
-		for (int i = 0; i < GRID_HEIGHT; i++) {
-			for (int j = 0; j < GRID_WIDTH; j++) {
+		for (int i = 0; i < Move.GRID_HEIGHT; i++) {
+			for (int j = 0; j < Move.GRID_WIDTH; j++) {
 				JLabel newLabel = new JLabel();
 				topPanel.add(newLabel);
 				labels[i][j] = newLabel;
@@ -123,7 +122,7 @@ public class PADPanel extends JPanel {
 			int[][] board = boards.get(index);
 			start = board;
 
-			initializeBoard();			
+			initializeBoard();
 			index++;
 		}
 	}

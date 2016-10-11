@@ -1,3 +1,4 @@
+package spring;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,16 +7,22 @@ import java.util.HashMap;
 import java.util.PriorityQueue;
 
 public class Move {
-	public static final int BASE_THREE_CONNECTED = 20;
+	public static final int COMBO_CONNECTED = 20;
 	public static final int BASE_CONNECTED_COST = 6;
 	public static final int BASE_SINGLE_CONNECTED = 1;
 	public static final int CONNECT_LENGTH = 3;
-
-	private final double PERCENTAGE_MAX_COMBO = .90;
+	public static final int MOVEMENT_COST = 1;
+	
+	public static int[] startArr = { 3, 3 };
+	
+	public static final int GRID_HEIGHT = 12;
+	public static final int GRID_WIDTH = 12;
+	
+	
+	private final double PERCENTAGE_MAX_COMBO = .80;
 
 	private int[][] startState;
 
-	private final int MOVEMENT_COST = 1;
 
 	private int MIN_HEURISTIC;
 
@@ -58,16 +65,24 @@ public class Move {
 
 	public int computeMinimumHeuristic(int[][] data) {
 		int[] histogram = createHistogram(data);
-		int maxCombo = findMaxCombo(histogram);
-		return (int) (Math.ceil(maxCombo * PERCENTAGE_MAX_COMBO)) * BASE_THREE_CONNECTED;
-	}
 
-	public int findMaxCombo(int[] histogram) {
-		int combo = 0;
-		for (int i = 0; i < histogram.length; i++)
-			combo += histogram[i] / CONNECT_LENGTH;
+		int heuristic = 0;
 
-		return combo;
+		for (int i = 0; i < histogram.length; i++) {
+			int connected = histogram[i] / CONNECT_LENGTH;
+			int remainder = histogram[i] % CONNECT_LENGTH;
+			int extra = 0;
+			
+			if (remainder == 1)
+				extra = 1;
+			else 
+				extra = BASE_CONNECTED_COST + (remainder - 2) * BASE_SINGLE_CONNECTED;
+			
+			
+			heuristic += (connected * COMBO_CONNECTED) + extra;
+		}
+
+		return (int) (heuristic * PERCENTAGE_MAX_COMBO);
 	}
 
 	public int[] createHistogram(int[][] data) {
@@ -109,7 +124,7 @@ public class Move {
 			PADNode curr = open.poll();
 			closed.put(curr.getHashCode(), curr);
 
-			if (curr.getH() >= MIN_HEURISTIC) 
+			if (curr.getH() >= MIN_HEURISTIC)
 				return curr;
 
 			int cost = curr.getG() + MOVEMENT_COST;
@@ -123,7 +138,7 @@ public class Move {
 				PADNode left = new PADNode(temp, x - 1, y);
 				interpretNode(left, curr, cost, x - 1, y);
 			}
-			if (x < 4) { // south
+			if (x < GRID_HEIGHT - 1) { // south
 				int[][] temp = cloneArr(curr.getArray());
 				replace(temp, x, y, x + 1, y);
 				PADNode left = new PADNode(temp, x + 1, y);
@@ -135,7 +150,7 @@ public class Move {
 				PADNode left = new PADNode(temp, x, y - 1);
 				interpretNode(left, curr, cost, x, y - 1);
 			}
-			if (y < 5) { // east
+			if (y < GRID_WIDTH - 1) { // east
 				int[][] temp = cloneArr(curr.getArray());
 				replace(temp, x, y, x, y + 1);
 				PADNode left = new PADNode(temp, x, y + 1);
@@ -208,10 +223,10 @@ public class Move {
 		}
 	}
 
-	public int getTraversalCount(){
+	public int getTraversalCount() {
 		return nodeTraverseCount;
 	}
-	
+
 	// utility methods
 
 	public void replace(int[][] arr, int i1, int i2, int j1, int j2) {

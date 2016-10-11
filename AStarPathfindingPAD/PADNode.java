@@ -1,10 +1,8 @@
+package spring;
 
 import java.util.Arrays;
 
 public class PADNode {
-
-	private final int BASE_DIAGONAL_V = 6;
-	private final int BASE_BACK_COST = 4;
 
 	private int f;
 	private int g;
@@ -118,7 +116,7 @@ public class PADNode {
 	// Computes total cost of connected cluster
 	public int computeConnectedCost(int nodeSum, boolean threeConnected) {
 		if (threeConnected)
-			return Move.BASE_THREE_CONNECTED + (nodeSum - Move.CONNECT_LENGTH) * Move.BASE_SINGLE_CONNECTED;
+			return Move.COMBO_CONNECTED + (nodeSum - Move.CONNECT_LENGTH) * Move.BASE_SINGLE_CONNECTED;
 		else
 			return Move.BASE_CONNECTED_COST + (nodeSum - 2) * Move.BASE_SINGLE_CONNECTED;
 	}

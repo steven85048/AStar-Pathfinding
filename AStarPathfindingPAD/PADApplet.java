@@ -1,41 +1,68 @@
+package spring;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Random;
 
 import javax.swing.JApplet;
 
 public class PADApplet extends JApplet {
-	private int APPLET_WIDTH = 1000, APPLET_HEIGHT = 1000;
+	public static int APPLET_WIDTH = 1500, APPLET_HEIGHT = 1500;
 
 	int[][] start;
-	int[] startArr = { 1, 1 };
 	char[] directions;
 	ArrayList<int[][]> boards;
 
-	String input = "HGHRBLLGBGRBDDHLBHBLDHHLHLLGBG";
-	
+	// String input = "HGHRBLLGBGRBDDHLBHBLDHHLHLLGBG";
+	String input;
+
 	public void init() {
-		start = new int[5][6];
+		input = randomizeBoard();
+		start = new int[Move.GRID_HEIGHT][Move.GRID_WIDTH];
+
 		parseInput(start, input);
-		
-		Move move = new Move(start, startArr[0], startArr[1]);
+
+		Move move = new Move(start, Move.startArr[0], Move.startArr[1]);
 		PADNode node = move.findMove();
-		
+
 		boards = move.traverseNodeStates(node);
 		Collections.reverse(boards);
-		
+
 		System.out.println(Arrays.deepToString(node.getArray()));
 		System.out.println("TRAVERSE COUNT: " + move.getTraversalCount());
 		System.out.println("MOVE COUNT: " + boards.size());
 
 		setSize(APPLET_WIDTH, APPLET_HEIGHT);
-		
+
 		try {
 			getContentPane().add(new PADPanel(start, boards));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public String randomizeBoard() {
+		Random rand = new Random();
+		String str = "";
+
+		for (int i = 0; i < Move.GRID_HEIGHT * Move.GRID_WIDTH; i++) {
+			int randomNum = rand.nextInt(66);
+			if (randomNum < 11)
+				str += "H";
+			else if (randomNum < 22)
+				str += "R";
+			else if (randomNum < 33)
+				str += "G";
+			else if (randomNum < 44)
+				str += "B";
+			else if (randomNum < 55)
+				str += "L";
+			else if (randomNum < 66)
+				str += "D";
+		}
+
+		return str;
 	}
 
 	public void parseInput(int[][] data, String input) {
@@ -66,7 +93,7 @@ public class PADApplet extends JApplet {
 					data[i][j] = 5;
 					break;
 				}
-				
+
 				index++;
 			}
 		}
